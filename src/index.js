@@ -1,5 +1,5 @@
 const express = require('express');
-const { findAll } = require('./ultis/ultis');
+const { findAll } = require('./utils/utils');
 
 const app = express();
 app.use(express.json());
