@@ -1,5 +1,5 @@
 const express = require('express');
-const { findAll, findById } = require('./utils/utils');
+const { findAll, findById, generateToken } = require('./utils/utils');
 
 const app = express();
 app.use(express.json());
@@ -23,7 +23,12 @@ app.get('/talker/:id', async (req, res) => {
 
 app.get('/talker', async (_req, res) => {
   const talkers = await findAll();
-  res.status(HTTP_OK_STATUS).json({ talkers });
+  res.status(HTTP_OK_STATUS).json(talkers);
+});
+
+app.post('/login', async (req, res) => {
+  const token = generateToken();
+  res.status(200).json({ token });
 });
 
 app.listen(PORT, () => {
