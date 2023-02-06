@@ -22,11 +22,6 @@ const findById = async (id) => {
     return content.find((talker) => talker.id === Number(id));
 };
 
-// const lastId = async () => {
-//   const talkers = await readFileTalker();
-//   return talkers[3].id;
-// };
-
 const insert = async (content) => {
   try {
     return await fs.writeFile(talkerPath, JSON.stringify(content));
@@ -36,6 +31,27 @@ const insert = async (content) => {
   }
 };
 
+const editTalker = async (post, id) => {
+  try {
+    const talkers = await readFileTalker();
+    let changeTalker;
+
+    for (let i = 0; i < talkers.length; i += 1) {
+      if (talkers[i].id === Number(id)) {
+        talkers[i].name = post.name;
+        talkers[i].age = post.age;
+        talkers[i].talk.watchedAt = post.talk.watchedAt;
+        talkers[i].talk.rate = post.talk.rate;
+        changeTalker = talkers[i];
+      }
+    }
+    await fs.writeFile(talkerPath, JSON.stringify(talkers));
+    return changeTalker;
+  } catch (error) {
+    return null;
+  }
+};
+
 const generateToken = () => crypto.randomBytes(8).toString('hex');
 
-module.exports = { findAll, findById, insert, generateToken, readFileTalker };
+module.exports = { findAll, findById, insert, generateToken, readFileTalker, editTalker };

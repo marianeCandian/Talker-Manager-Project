@@ -7,7 +7,8 @@ const {
   validateTalk,
   validateWatchedAt,
   validateRate } = require('./utils/middleware');
-const { findAll, findById, generateToken, insert, readFileTalker } = require('./utils/utils');
+const { findAll,
+  findById, generateToken, insert, readFileTalker, editTalker } = require('./utils/utils');
 
 const app = express();
 app.use(express.json());
@@ -55,6 +56,20 @@ app.post('/talker',
     db.push(newTalker);
     await insert(db);
     res.status(201).json(newTalker);
+  });
+
+app.put('/talker/:id',
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalk,
+  validateWatchedAt,
+  validateRate,
+  async (req, res) => {
+    const { id } = req.params;
+    const post = req.body;
+    const talkerEdit = await editTalker(post, id);
+    res.status(200).json(talkerEdit);
   });
 
 app.listen(PORT, () => {
