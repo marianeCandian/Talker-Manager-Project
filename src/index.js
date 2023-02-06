@@ -22,6 +22,22 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
+app.get('/talker/search', validateToken, async (req, res) => {
+  try {
+    const { q } = req.query;
+    const talkers = await readFileTalker();
+    const filteresTalkers = talkers.filter((talker) => talker.name.includes(q));
+
+    if (filteresTalkers.length > 0) {
+      console.log('aqui');
+      return res.status(200).json(filteresTalkers);
+    }
+     return res.sendStatus(404);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+});
+
 app.get('/talker/:id', async (req, res) => {
   const { id } = req.params;
   const result = await findById(id);
@@ -33,7 +49,10 @@ app.get('/talker/:id', async (req, res) => {
 
 app.get('/talker', async (_req, res) => {
   const talkers = await findAll();
-  res.status(HTTP_OK_STATUS).json(talkers);
+  if (!talkers) {
+    return res.status(200).json([]);
+  }
+  return res.status(HTTP_OK_STATUS).json(talkers);
 });
 
 app.post('/login', validateLogin, async (req, res) => {
