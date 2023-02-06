@@ -1,12 +1,33 @@
 const fs = require('fs/promises');
 const path = require('path');
 
-const talkerPath = path.resolve(__dirname, '..', 'talker.json');
-
-const findAll = async () => {
- const content = await fs.readFile(talkerPath, 'utf-8');
- const talkers = JSON.parse(content);
- return talkers;
+const readFileTalker = async () => {
+  const talkerPath = path.resolve(__dirname, '..', 'talker.json');
+  try {
+    const content = await fs.readFile(talkerPath, 'utf-8');
+    return JSON.parse(content);
+  } catch (error) {
+    return null;
+  }
 };
 
-module.exports = { findAll };
+const findAll = async () => {
+  const talkers = await readFileTalker();
+  return talkers;
+};
+
+const findById = async (id) => {
+    const content = await readFileTalker();
+    return content.find((talker) => talker.id === Number(id));
+};
+
+const insert = async (content) => {
+  const talkerPath = path.resolve(__dirname, '..', 'talker.json');
+  try {
+    await fs.writeFile(talkerPath, JSON.stringify(content));
+  } catch (error) {
+    return null;
+  }
+};
+
+module.exports = { findAll, findById, insert };
