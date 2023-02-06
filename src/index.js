@@ -8,7 +8,8 @@ const {
   validateWatchedAt,
   validateRate } = require('./utils/middleware');
 const { findAll,
-  findById, generateToken, insert, readFileTalker, editTalker } = require('./utils/utils');
+  findById,
+  generateToken, insert, readFileTalker, editTalker, deleteTalker } = require('./utils/utils');
 
 const app = express();
 app.use(express.json());
@@ -71,6 +72,12 @@ app.put('/talker/:id',
     const talkerEdit = await editTalker(post, id);
     res.status(200).json(talkerEdit);
   });
+
+app.delete('/talker/:id', validateToken, async (req, res) => {
+  const { id } = req.params;
+  await deleteTalker(id);
+  res.sendStatus(204);
+});
 
 app.listen(PORT, () => {
   console.log('Online');

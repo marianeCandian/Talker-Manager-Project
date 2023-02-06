@@ -52,6 +52,18 @@ const editTalker = async (post, id) => {
   }
 };
 
+const deleteTalker = async (id) => {
+  const talkers = await readFileTalker();
+  const deleted = talkers.filter((talker) => talker.id !== Number(id));
+  await fs.writeFile(talkerPath, JSON.stringify(deleted));
+};
+
 const generateToken = () => crypto.randomBytes(8).toString('hex');
 
-module.exports = { findAll, findById, insert, generateToken, readFileTalker, editTalker };
+module.exports = { findAll,
+  findById,
+  insert,
+  generateToken,
+  readFileTalker,
+  editTalker,
+  deleteTalker };
