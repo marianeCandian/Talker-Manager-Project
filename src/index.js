@@ -1,4 +1,5 @@
 const express = require('express');
+const validateLogin = require('./utils/middleware');
 const { findAll, findById, generateToken } = require('./utils/utils');
 
 const app = express();
@@ -26,7 +27,7 @@ app.get('/talker', async (_req, res) => {
   res.status(HTTP_OK_STATUS).json(talkers);
 });
 
-app.post('/login', async (req, res) => {
+app.post('/login', validateLogin, async (req, res) => {
   const token = generateToken();
   res.status(200).json({ token });
 });
