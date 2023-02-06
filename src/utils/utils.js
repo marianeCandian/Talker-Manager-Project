@@ -2,8 +2,8 @@ const fs = require('fs/promises');
 const path = require('path');
 const crypto = require('crypto');
 
+const talkerPath = path.resolve(__dirname, '..', 'talker.json');
 const readFileTalker = async () => {
-  const talkerPath = path.resolve(__dirname, '..', 'talker.json');
   try {
     const content = await fs.readFile(talkerPath, 'utf-8');
     return JSON.parse(content);
@@ -22,15 +22,20 @@ const findById = async (id) => {
     return content.find((talker) => talker.id === Number(id));
 };
 
-const insert = async (email, password) => {
-  const talkerPath = path.resolve(__dirname, '..', 'talker.json');
+// const lastId = async () => {
+//   const talkers = await readFileTalker();
+//   return talkers[3].id;
+// };
+
+const insert = async (content) => {
   try {
-    await fs.writeFile(talkerPath, JSON.stringify(email, password));
+    return await fs.writeFile(talkerPath, JSON.stringify(content));
   } catch (error) {
+    console.error('Error ao salvar arquivo', error.message);
     return null;
   }
 };
 
 const generateToken = () => crypto.randomBytes(8).toString('hex');
 
-module.exports = { findAll, findById, insert, generateToken };
+module.exports = { findAll, findById, insert, generateToken, readFileTalker };

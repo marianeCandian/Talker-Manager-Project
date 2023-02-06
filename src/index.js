@@ -1,6 +1,13 @@
 const express = require('express');
-const validateLogin = require('./utils/middleware');
-const { findAll, findById, generateToken } = require('./utils/utils');
+const { 
+  validateLogin,
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalk,
+  validateWatchedAt,
+  validateRate } = require('./utils/middleware');
+const { findAll, findById, generateToken, insert, readFileTalker } = require('./utils/utils');
 
 const app = express();
 app.use(express.json());
@@ -31,6 +38,24 @@ app.post('/login', validateLogin, async (req, res) => {
   const token = generateToken();
   res.status(200).json({ token });
 });
+
+app.post('/talker',
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalk,
+  validateWatchedAt,
+  validateRate, async (req, res) => {
+    const content = req.body;
+    const db = await readFileTalker();
+    const newTalker = {
+      ...content,
+      id: db.length + 1,
+    };
+    db.push(newTalker);
+    await insert(db);
+    res.status(201).json(newTalker);
+  });
 
 app.listen(PORT, () => {
   console.log('Online');
